@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'theme_provider.dart';
 
 class SignSpeechScreen extends StatefulWidget {
   const SignSpeechScreen({Key? key}) : super(key: key);
@@ -33,18 +35,20 @@ class _SignSpeechScreenState extends State<SignSpeechScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'SignSpeak',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: isDark ? Colors.white : Colors.black,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: Padding(
@@ -53,9 +57,12 @@ class _SignSpeechScreenState extends State<SignSpeechScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 10),
-            const Text(
+            Text(
               'Sign-to-Speech Translator',
-              style: TextStyle(fontSize: 18, color: Colors.black54),
+              style: TextStyle(
+                fontSize: 18,
+                color: isDark ? Colors.white70 : Colors.black54,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
@@ -66,13 +73,16 @@ class _SignSpeechScreenState extends State<SignSpeechScreen> {
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.grey[200],
+                  color: isDark ? Colors.grey[800] : Colors.grey[200],
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: const Center(
+                child: Center(
                   child: Text(
                     'Camera Preview',
-                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: isDark ? Colors.white70 : Colors.black54,
+                    ),
                   ),
                 ),
               ),
@@ -101,25 +111,30 @@ class _SignSpeechScreenState extends State<SignSpeechScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
+                  color: isDark ? Colors.grey[700] : Colors.grey[100],
                   borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: Colors.grey.shade300),
+                  border: Border.all(
+                    color: isDark ? Colors.grey[600]! : Colors.grey.shade300,
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'Translation:',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: isDark ? Colors.white : Colors.black87,
                       ),
                     ),
                     SizedBox(height: 8),
                     Text(
                       'Sign language translation will appear here...',
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark ? Colors.white70 : Colors.black54,
+                      ),
                     ),
                   ],
                 ),
@@ -133,7 +148,8 @@ class _SignSpeechScreenState extends State<SignSpeechScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
+        unselectedItemColor: isDark ? Colors.grey[400] : Colors.grey,
+        backgroundColor: isDark ? Colors.grey[800] : Colors.white,
         showSelectedLabels: true,
         showUnselectedLabels: true,
         currentIndex: _selectedIndex,

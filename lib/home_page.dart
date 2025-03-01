@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'theme_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -33,18 +35,22 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'SignSpeak',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: isDark ? Colors.white : Colors.black,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: Padding(
@@ -53,9 +59,12 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'Choose your translation mode',
-              style: TextStyle(fontSize: 18, color: Colors.black54),
+              style: TextStyle(
+                fontSize: 18,
+                color: isDark ? Colors.white70 : Colors.black54,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 30),
@@ -89,7 +98,8 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
+        unselectedItemColor: isDark ? Colors.grey[400] : Colors.grey,
+        backgroundColor: isDark ? Colors.grey[800] : Colors.white,
         showSelectedLabels: true,
         showUnselectedLabels: true,
         currentIndex: _selectedIndex,

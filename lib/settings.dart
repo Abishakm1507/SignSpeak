@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'theme_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -9,7 +11,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   int _selectedIndex = 3;
-  bool _isDarkMode = false;
   bool _isOfflineMode = false;
   bool _isVoiceFeedback = true;
   double _speechSpeed = 0.5;
@@ -39,8 +40,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // Show Language Selection Modal
   void _showLanguageSelection() {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final isDark = themeProvider.isDarkMode;
+
     showModalBottomSheet(
       context: context,
+      backgroundColor: isDark ? Colors.grey[800] : Colors.white,
       builder: (context) {
         return Container(
           padding: const EdgeInsets.all(15),
@@ -48,7 +53,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: const Text("American Sign Language (ASL)"),
+                title: Text(
+                  "American Sign Language (ASL)",
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                ),
                 onTap: () {
                   setState(() {
                     _selectedLanguage = "ASL";
@@ -57,7 +67,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
               ListTile(
-                title: const Text("British Sign Language (BSL)"),
+                title: Text(
+                  "British Sign Language (BSL)",
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                ),
                 onTap: () {
                   setState(() {
                     _selectedLanguage = "BSL";
@@ -66,7 +81,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
               ListTile(
-                title: const Text("Indian Sign Language (ISL)"),
+                title: Text(
+                  "Indian Sign Language (ISL)",
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                ),
                 onTap: () {
                   setState(() {
                     _selectedLanguage = "ISL";
@@ -83,26 +103,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'SignSpeak',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: isDark ? Colors.white : Colors.black,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.dark_mode, color: Colors.black),
+            icon: Icon(
+              isDark ? Icons.light_mode : Icons.dark_mode,
+              color: isDark ? Colors.white : Colors.black,
+            ),
             onPressed: () {
-              setState(() {
-                _isDarkMode = !_isDarkMode;
-              });
+              themeProvider.toggleTheme();
             },
           )
         ],
@@ -114,17 +137,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 10),
 
             // APP PREFERENCES SECTION
-            const SectionTitle(title: "APP PREFERENCES"),
+            SectionTitle(title: "APP PREFERENCES"),
 
             // Dark Mode
             SettingToggle(
-              icon: Icons.dark_mode,
+              icon: isDark ? Icons.light_mode : Icons.dark_mode,
               title: "Dark Mode",
-              value: _isDarkMode,
+              value: isDark,
               onChanged: (value) {
-                setState(() {
-                  _isDarkMode = value;
-                });
+                themeProvider.toggleTheme();
               },
             ),
 
@@ -154,7 +175,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 10),
 
             // VOICE & SPEECH SECTION
-            const SectionTitle(title: "VOICE & SPEECH"),
+            SectionTitle(title: "VOICE & SPEECH"),
 
             // Voice Feedback
             SettingToggle(
@@ -195,7 +216,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 10),
 
             // APP INFORMATION SECTION
-            const SectionTitle(title: "APP INFORMATION"),
+            SectionTitle(title: "APP INFORMATION"),
 
             // Help & Support
             SettingOption(
@@ -211,7 +232,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
+        unselectedItemColor: isDark ? Colors.grey[400] : Colors.grey,
+        backgroundColor: isDark ? Colors.grey[800] : Colors.white,
         showSelectedLabels: true,
         showUnselectedLabels: true,
         currentIndex: _selectedIndex,
@@ -237,12 +259,17 @@ class SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Text(
         title,
         style: TextStyle(
-            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey[700]),
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: isDark ? Colors.grey[300] : Colors.grey[700],
+        ),
       ),
     );
   }
@@ -294,12 +321,23 @@ class SettingOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+
     return ListTile(
       leading: Icon(icon, color: Colors.blue),
       title: Text(title),
       trailing: value != null
-          ? Text(value!, style: TextStyle(color: Colors.grey[700]))
-          : const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+          ? Text(
+              value!,
+              style: TextStyle(
+                color: isDark ? Colors.grey[400] : Colors.grey[700],
+              ),
+            )
+          : Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: isDark ? Colors.grey[400] : Colors.grey,
+            ),
       onTap: onTap,
     );
   }
@@ -322,6 +360,8 @@ class SettingSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+
     return ListTile(
       leading: Icon(icon, color: Colors.blue),
       title: Text(title),
@@ -331,7 +371,7 @@ class SettingSlider extends StatelessWidget {
         min: 0,
         max: 1,
         activeColor: Colors.blue,
-        inactiveColor: Colors.grey[300],
+        inactiveColor: isDark ? Colors.grey[700] : Colors.grey[300],
       ),
     );
   }

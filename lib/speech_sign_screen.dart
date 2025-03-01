@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'theme_provider.dart';
 
 class SpeechSignScreen extends StatefulWidget {
   const SpeechSignScreen({Key? key}) : super(key: key);
-
   @override
   State<SpeechSignScreen> createState() => _SpeechSignScreenState();
 }
@@ -11,7 +12,6 @@ class _SpeechSignScreenState extends State<SpeechSignScreen> {
   int _selectedIndex = 2;
   final TextEditingController _textController = TextEditingController();
   double _progressValue = 0.4;
-
   @override
   void dispose() {
     _textController.dispose();
@@ -22,7 +22,6 @@ class _SpeechSignScreenState extends State<SpeechSignScreen> {
     setState(() {
       _selectedIndex = index;
     });
-
     // Navigate based on bottom nav selection
     switch (index) {
       case 0: // Home
@@ -41,18 +40,20 @@ class _SpeechSignScreenState extends State<SpeechSignScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'SignSpeak',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: isDark ? Colors.white : Colors.black,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: Padding(
@@ -61,12 +62,11 @@ class _SpeechSignScreenState extends State<SpeechSignScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 10),
-
             // Speech Input Box
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: isDark ? Colors.grey[800] : Colors.grey[200],
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Row(
@@ -74,117 +74,187 @@ class _SpeechSignScreenState extends State<SpeechSignScreen> {
                   Expanded(
                     child: TextField(
                       controller: _textController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: 'Type or speak your text here',
+                        hintStyle: TextStyle(
+                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        ),
                         border: InputBorder.none,
                       ),
+                      style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                      maxLines: 3,
+                      minLines: 1,
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.black54),
+                    icon: Icon(
+                      Icons.mic,
+                      color: isDark ? Colors.blue[300] : Colors.blue,
+                      size: 28,
+                    ),
                     onPressed: () {
-                      _textController.clear();
+                      // Implement speech-to-text functionality
                     },
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 15),
-
-            // Microphone Button
-            GestureDetector(
-              onTap: () {
-                print('Start Voice Input');
-              },
-              child: const CircleAvatar(
-                radius: 30,
-                backgroundColor: Colors.blueAccent,
-                child: Icon(Icons.mic, color: Colors.white, size: 35),
-              ),
-            ),
             const SizedBox(height: 20),
-
-            // Animated Avatar (Dummy Image)
-            Container(
-              height: 250,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(15),
+            // Translation Button
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isDark ? Colors.blue[700] : Colors.blue,
+                minimumSize: const Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-              child: const Center(
-                // Replace with real animation or image
-                child: Text(
-                  'Avatar Animation Area',
-                  style: TextStyle(color: Colors.black54),
+              onPressed: () {
+                // Implement translation functionality
+              },
+              child: const Text(
+                'Translate to Sign Language',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
             ),
             const SizedBox(height: 20),
-
-            // Controls (Play, Speed, Repeat)
+            // Progress Indicator
+            Row(
+              children: [
+                Expanded(
+                  child: LinearProgressIndicator(
+                    value: _progressValue,
+                    backgroundColor:
+                        isDark ? Colors.grey[700] : Colors.grey[300],
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      isDark ? Colors.blue[400]! : Colors.blue,
+                    ),
+                    minHeight: 10,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  '${(_progressValue * 100).toInt()}%',
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            // Sign Language Display Area
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.grey[850] : Colors.grey[100],
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(
+                    color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+                    width: 2,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.sign_language,
+                      size: 80,
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Sign language animation will appear here',
+                      style: TextStyle(
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        fontSize: 16,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Controls for the animation
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.play_circle_fill,
-                      color: Colors.blue, size: 40),
+                  icon: Icon(
+                    Icons.replay,
+                    color: isDark ? Colors.blue[300] : Colors.blue,
+                  ),
                   onPressed: () {
-                    print('Play Animation');
+                    // Implement replay functionality
                   },
                 ),
-                const SizedBox(width: 20),
                 IconButton(
-                  icon:
-                      const Icon(Icons.speed, color: Colors.black54, size: 30),
+                  icon: Icon(
+                    Icons.pause,
+                    color: isDark ? Colors.blue[300] : Colors.blue,
+                  ),
                   onPressed: () {
-                    print('Change Speed');
+                    // Implement pause functionality
                   },
                 ),
-                const SizedBox(width: 20),
                 IconButton(
-                  icon: const Icon(Icons.refresh,
-                      color: Colors.black54, size: 30),
+                  icon: Icon(
+                    Icons.speed,
+                    color: isDark ? Colors.blue[300] : Colors.blue,
+                  ),
                   onPressed: () {
-                    print('Repeat Animation');
-                    setState(() {
-                      _progressValue = 0.0;
-                    });
+                    // Implement speed control functionality
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.save_alt,
+                    color: isDark ? Colors.blue[300] : Colors.blue,
+                  ),
+                  onPressed: () {
+                    // Implement save functionality
                   },
                 ),
               ],
             ),
-
-            // Progress Bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: LinearProgressIndicator(
-                value: _progressValue,
-                backgroundColor: Colors.grey[300],
-                color: Colors.blue,
-                minHeight: 5,
-              ),
-            ),
+            const SizedBox(height: 10),
           ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: Icon(Icons.front_hand), label: 'Sign-Speech'),
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.graphic_eq), label: 'Speech-Sign'),
+            icon: Icon(Icons.sign_language),
+            label: 'Sign-Speech',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: 'Settings'),
+            icon: Icon(Icons.record_voice_over),
+            label: 'Speech-Sign',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
         ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: isDark ? Colors.blue[300] : Colors.blue,
+        unselectedItemColor: isDark ? Colors.grey[400] : Colors.grey[600],
+        backgroundColor: isDark ? Colors.grey[900] : Colors.white,
+        type: BottomNavigationBarType.fixed,
+        onTap: _onItemTapped,
       ),
     );
   }
