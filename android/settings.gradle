@@ -10,11 +10,22 @@ pluginManagement {
 
     includeBuild("${settings.ext.flutterSdkPath}/packages/flutter_tools/gradle")
 
-    plugins {
-        id "dev.flutter.flutter-gradle-plugin" version "1.0.0" apply false
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        google()
+        mavenCentral()
     }
 }
 
 include ":app"
 
-apply from: "${settings.ext.flutterSdkPath}/packages/flutter_tools/gradle/app_plugin_loader.gradle"
+// This is needed to include the Flutter specific build logic
+apply from: "${settings.ext.flutterSdkPath}/packages/flutter_tools/gradle/settings.gradle.kts"

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'theme_provider.dart';
+import 'learn_sign_language.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -87,6 +88,20 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.blue,
                     onTap: () {
                       Navigator.pushReplacementNamed(context, '/speech_sign');
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  ModeButton(
+                    text: 'Learn Sign Language',
+                    icon: Icons.school,
+                    color: Colors.green,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LearnSignLanguage(),
+                        ),
+                      );
                     },
                   ),
                 ],
