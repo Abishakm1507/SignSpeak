@@ -11,165 +11,177 @@ class LearnNumbers extends StatefulWidget {
 }
 
 class _LearnNumbersState extends State<LearnNumbers> {
-  VideoPlayerController? _controller;
+  late VideoPlayerController _controller;
+  String currentnumber = '0';
   bool isPlaying = false;
-  final List<String> numbers = List.generate(10, (index) => index.toString());
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideo();
+  }
+
+  void _initializeVideo() {
+    _controller = VideoPlayerController.asset(
+      'assets/videos/$currentnumber.mp4',
+    )..initialize().then((_) {
+        setState(() {});
+      });
+  }
+
+  void _changeVideo(String number) {
+    _controller.dispose();
+    setState(() {
+      currentnumber = number;
+      _controller = VideoPlayerController.asset(
+        'assets/videos/$number.mp4',
+      )..initialize().then((_) {
+          setState(() {});
+          _controller.play();
+          isPlaying = true;
+        });
+    });
+  }
 
   @override
   void dispose() {
-    _controller?.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
-  void _playVideo(String number) {
-    _controller?.dispose();
-    _controller = VideoPlayerController.asset('assets/videos/numbers/$number.mp4')
-      ..initialize().then((_) {
-        setState(() {
-          _controller!.play();
-          isPlaying = true;
-        });
-      });
-    _controller!.addListener(() {
-      if (_controller!.value.position >= _controller!.value.duration) {
-        setState(() {
-          isPlaying = false;
-        });
-      }
-    });
-  }
+  final List<String> alphabets = [
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+  ];
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDark = themeProvider.isDarkMode;
-    final backgroundColor = isDark ? const Color(0xFF1E1E1E) : Colors.grey[50]!;
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final primaryColor = isDark ? Colors.green[200]! : Colors.green[400]!;
-    final secondaryColor = isDark ? Colors.green[100]! : Colors.green[300]!;
 
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(
-          'Learn Numbers',
+          'Learn Alphabets',
           style: TextStyle(
             fontSize: 24,
-            fontWeight: FontWeight.w600,
-            color: textColor,
-            letterSpacing: 0.5,
+            fontWeight: FontWeight.bold,
+            color: isDark ? Colors.white : Colors.black,
           ),
         ),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: backgroundColor,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: textColor),
+          icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: Column(
         children: [
-          if (_controller != null && _controller!.value.isInitialized)
-            Container(
-              margin: const EdgeInsets.all(16),
+          const SizedBox(height: 20),
+          // Video Player Section
+          AspectRatio(
+            aspectRatio: 16 / 9,
+            child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: primaryColor.withOpacity(0.3),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(15),
               ),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: AspectRatio(
-                  aspectRatio: _controller!.value.aspectRatio,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      VideoPlayer(_controller!),
-                      if (!isPlaying)
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.5),
-                            shape: BoxShape.circle,
-                          ),
-                          child: IconButton(
-                            iconSize: 64,
-                            icon: const Icon(Icons.play_arrow, color: Colors.white),
-                            onPressed: () {
-                              setState(() {
-                                _controller!.play();
-                                isPlaying = true;
-                              });
-                            },
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
+                borderRadius: BorderRadius.circular(15),
+                child: _controller.value.isInitialized
+                    ? VideoPlayer(_controller)
+                    : const Center(child: CircularProgressIndicator()),
               ),
             ),
+          ),
+          const SizedBox(height: 20),
+          // Video Controls
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: Icon(
+                  isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
+                  size: 40,
+                  color: Colors.blue,
+                ),
+                onPressed: () {
+                  setState(() {
+                    if (isPlaying) {
+                      _controller.pause();
+                    } else {
+                      _controller.play();
+                    }
+                    isPlaying = !isPlaying;
+                  });
+                },
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.replay,
+                  size: 40,
+                  color: Colors.blue,
+                ),
+                onPressed: () {
+                  _controller.seekTo(Duration.zero);
+                  _controller.play();
+                  setState(() {
+                    isPlaying = true;
+                  });
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          // Current number Display
+          Text(
+            'Current number: $currentnumber',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : Colors.black,
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Alphabet Grid
           Expanded(
-            child: GridView.count(
-              padding: const EdgeInsets.all(16),
-              crossAxisCount: 3,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
-              children: numbers.map((number) => _buildNumberCard(
-                number,
-                primaryColor,
-                secondaryColor,
-                textColor,
-              )).toList(),
+            child: GridView.builder(
+              padding: const EdgeInsets.all(20),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                childAspectRatio: 1,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: alphabets.length,
+              itemBuilder: (context, index) {
+                final number = alphabets[index];
+                return ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: currentnumber == number
+                        ? Colors.blue
+                        : isDark ? Colors.grey[700] : Colors.grey[200],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () => _changeVideo(number),
+                  child: Text(
+                    number,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: currentnumber == number
+                          ? Colors.white
+                          : isDark ? Colors.white70 : Colors.black87,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildNumberCard(
-    String number,
-    Color startColor,
-    Color endColor,
-    Color textColor,
-  ) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: InkWell(
-        onTap: () => _playVideo(number),
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                startColor.withOpacity(0.8),
-                endColor.withOpacity(0.8),
-              ],
-            ),
-          ),
-          child: Center(
-            child: Text(
-              number,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 32,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }

@@ -12,22 +12,22 @@ class LearnSignLanguage extends StatelessWidget {
   final Map<String, Map<String, dynamic>> categoryStyles = const {
     'Alphabets': {
       'icon': Icons.abc,
-      'gradient': [Color(0xFF1E88E5), Color(0xFF1565C0)],
+      'gradient': [Color.fromARGB(255, 121, 192, 255), Color.fromARGB(255, 94, 169, 255)],
       'iconColor': Colors.white,
     },
     'Numbers': {
       'icon': Icons.numbers,
-      'gradient': [Color(0xFF43A047), Color(0xFF2E7D32)],
+      'gradient': [Color.fromARGB(255, 143, 247, 148), Color.fromARGB(255, 101, 211, 106)],
       'iconColor': Colors.white,
     },
     'Words': {
       'icon': Icons.text_fields,
-      'gradient': [Color(0xFFEF6C00), Color(0xFFE65100)],
+      'gradient': [Color.fromARGB(255, 255, 171, 54), Color.fromARGB(255, 255, 166, 41)],
       'iconColor': Colors.white,
     },
     'Practice Test': {
       'icon': Icons.school,
-      'gradient': [Color(0xFF8E24AA), Color(0xFF6A1B9A)],
+      'gradient': [Color.fromARGB(255, 227, 124, 255), Color.fromARGB(255, 135, 95, 160)],
       'iconColor': Colors.white,
     },
   };
@@ -45,7 +45,7 @@ class LearnSignLanguage extends StatelessWidget {
         title: Text(
           'Learn Sign Language',
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 25,
             fontWeight: FontWeight.bold,
             color: textColor,
             letterSpacing: 1.2,
@@ -68,7 +68,7 @@ class LearnSignLanguage extends StatelessWidget {
             Text(
               'Choose a Category',
               style: TextStyle(
-                fontSize: 32,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: textColor,
                 letterSpacing: 1.5,

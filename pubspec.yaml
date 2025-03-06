@@ -12,11 +12,6 @@ dependencies:
   shared_preferences: ^2.2.1
   camera: ^0.11.1
   permission_handler: ^11.4.0
-  lottie: ^3.0.0
-  three_dart: ^0.0.16
-  three_dart_jsm: ^0.0.9
-  flutter_gl: ^0.0.21
-  model_viewer_plus: ^1.5.0
   provider: ^6.1.2
   speech_to_text: ^6.1.0
   flutter_tts: ^3.8.5

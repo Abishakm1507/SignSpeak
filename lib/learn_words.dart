@@ -18,9 +18,27 @@ class _LearnWordsState extends State<LearnWords> {
   List<String> filteredWords = [];
 
   final List<String> words = [
-    'Hello', 'Thank you', 'Please', 'Sorry', 'Good morning',
-    'Good night', 'Yes', 'No', 'Help', 'Love',
-    'Friend', 'Family', 'Food', 'Water', 'Home'
+    'AFTER', 'AGAIN', 'AGAINST', 'AGE', 'ALL', 'ALONE', 'ALSO', 'AND', 'ASK', 'AT', 
+      'BE', 'BEAUTIFUL', 'BEFORE', 'BEST', 'BETTER', 'BUSY', 'BUT', 'BYE',
+      'CAN', 'CANNOT', 'CHANGE', 'COLLEGE', 'COME', 'COMPUTER',
+      'DAY', 'DISTANCE', 'DO NOT', 'DO', 'DOES NOT',
+      'EAT', 'ENGINEER',
+      'FIGHT', 'FINISH', 'FROM',
+      'GLITTER', 'GO', 'GOD', 'GOLD', 'GOOD', 'GREAT',
+      'HAND', 'HANDS', 'HAPPY', 'HELLO', 'HELP', 'HER', 'HERE', 'HIS', 'HOME', 'HOMEPAGE', 'HOW',
+      'INVENT', 'IT',
+      'KEEP',
+      'LANGUAGE', 'LAUGH', 'LEARN',
+      'ME', 'MY', 'MORE',
+      'NAME', 'NEXT', 'NOT', 'NOW',
+      'OF', 'ON', 'OUR', 'OUT',
+      'PRETTY',
+      'RIGHT',
+      'SAD', 'SAFE', 'SEE', 'SELF', 'SIGN', 'SING', 'SO', 'SOUND', 'STAY', 'STUDY',
+      'TALK', 'TELEVISION', 'THANK', 'THANKYOU', 'THAT', 'THEY', 'THIS', 'THOSE', 'TIME', 'TO', 'TYPE',
+      'US',
+      'WALK', 'WASH', 'WAY', 'WE', 'WELCOME', 'WHAT', 'WHEN', 'WHERE', 'WHICH', 'WHO', 'WHOLE', 'WHOSE', 'WHY', 'WILL', 'WITH', 'WITHOUT', 'WORDS', 'WORLD', 'WORK', 'WRONG',
+      'YOU', 'YOUR', 'YOURSELF'
   ];
 
   @override
